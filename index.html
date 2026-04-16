@@ -7,57 +7,58 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; 
-            background-color: #121212; color: #e0e0e0; padding: 20px; display: flex; flex-direction: column; align-items: center; margin: 0;
-        }
-        
-        /* TELAS BASE */
-        #telaAutenticacao { width: 100%; max-width: 400px; margin-top: 50px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background-color: #121212; color: #e0e0e0; padding: 20px; display: flex; flex-direction: column; align-items: center; margin: 0; }
+        #telaAutenticacao, #telaBloqueio { width: 100%; max-width: 900px; margin-top: 50px; display: none; flex-direction: column; align-items: center;}
         #telaAplicativo { width: 100%; display: none; flex-direction: column; align-items: center; }
-
-        /* NAVEGAÇÃO */
-        .nav-menu { display: flex; gap: 8px; width: 100%; max-width: 1100px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
-        .nav-btn { background-color: #1e1e1e; color: #b3b3b3; border: 1px solid #333; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; }
-        .nav-btn.active { background-color: #ffffff; color: #121212; border-color: #ffffff; }
-        .btn-sair { background-color: transparent; color: #ff6b6b; border: 1px solid #ff6b6b; margin-left: 20px;}
-        .btn-sair:hover { background-color: #ff6b6b; color: #121212; }
-
-        /* CONTAINERS GERAIS */
-        .container { width: 100%; max-width: 1100px; background: #1e1e1e; padding: 30px; border-radius: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); border: 1px solid #333; margin-bottom: 20px; box-sizing: border-box;}
-        h2 { margin-top: 0; color: #ffffff; border-bottom: 2px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        h3 { color: #fff; margin-bottom: 10px;}
         
-        /* FORMULÁRIOS */
+        .nav-menu { display: flex; gap: 8px; width: 100%; max-width: 1100px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+        .nav-btn { background-color: #1e1e1e; color: #b3b3b3; border: 1px solid #333; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .nav-btn.active { background-color: #ffffff; color: #121212; border-color: #ffffff; }
+        
+        .container { width: 100%; max-width: 1100px; background: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #333; margin-bottom: 20px; box-sizing: border-box;}
+        .container-auth { max-width: 400px; }
+        h2 { margin-top: 0; border-bottom: 2px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-full { grid-column: span 2; }
         .form-third { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-        label { display: block; margin-top: 10px; font-weight: 500; font-size: 13px; color: #b3b3b3; }
-        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; background-color: #2c2c2c; color: #ffffff; border: 1px solid #444; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 14px; }
-        .btn-principal { margin-top: 25px; width: 100%; background-color: #ffffff; color: #121212; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .btn-secundario { margin-top: 10px; width: 100%; background-color: transparent; color: #b3b3b3; border: 1px solid #444; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 14px; }
-        .link-text { color: #3b82f6; font-size: 12px; cursor: pointer; text-decoration: underline; text-align: center; display: block; margin-top: 15px;}
         
-        /* BOTÕES DE AÇÃO TABELAS */
-        .btn-acao { background: #333; color: #fff; border: 1px solid #555; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .btn-export { background: #10b981; color: #121212; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; margin-left: 5px; }
+        label { display: block; margin-top: 10px; font-weight: 500; font-size: 13px; color: #888; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; background-color: #2c2c2c; color: #fff; border: 1px solid #444; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        
+        .btn-principal { margin-top: 25px; width: 100%; background-color: #fff; color: #000; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-acao { background: #333; color: #fff; border: 1px solid #555; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
         .btn-zap { background: #25D366; color: #fff; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; text-decoration: none; display: inline-block; text-align: center; width: 100%; box-sizing: border-box; margin-top: 15px;}
-        .search-bar { margin-bottom: 15px; padding: 10px; background: #252525; border: 1px solid #444; border-radius: 6px; width: 100%; color: #fff; box-sizing: border-box; }
-
-        /* DASHBOARD & FINANCEIRO */
+        
+        .search-bar { margin-bottom: 15px; padding: 12px; background: #252525; border: 1px solid #444; border-radius: 6px; width: 100%; color: #fff; box-sizing: border-box; font-size: 14px;}
+        
+        /* TABELAS & DASHBOARD */
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left; }
+        th, td { padding: 12px 10px; border-bottom: 1px solid #333; font-size: 14px; }
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .card-fin { background: #252525; padding: 20px; border-radius: 8px; border-left: 4px solid #ffffff; }
         .card-fin h3 { margin: 0; font-size: 11px; color: #888; text-transform: uppercase; }
         .card-fin p { margin: 10px 0 0 0; font-size: 22px; font-weight: bold; }
-        .chart-container { background: #252525; padding: 20px; border-radius: 8px; border: 1px solid #333; margin-top: 20px; }
+        .chart-box { background: #252525; padding: 20px; border-radius: 8px; border: 1px solid #333; }
 
-        /* TABELAS GERAIS */
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left; }
-        th, td { padding: 12px 10px; border-bottom: 1px solid #333; font-size: 14px; }
-        th { color: #888; font-weight: 500; font-size: 11px; text-transform: uppercase; }
-        .badge { background: #333; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #fff; display: inline-block;}
-        .status-novo { background: #3b82f6; } .status-orcamento { background: #f59e0b; } .status-agendado { background: #10b981; } .status-perdido { background: #ef4444; }
+        /* PLANOS (PAYWALL) */
+        .planos-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .plano-card { background: #252525; padding: 25px; border-radius: 8px; border: 1px solid #444; text-align: center; }
+        .plano-card h3 { margin-top: 0; color: #fff; }
+        .plano-card .preco { font-size: 28px; font-weight: bold; margin: 15px 0; color: #3b82f6; }
+        .plano-card ul { list-style: none; padding: 0; text-align: left; font-size: 14px; color: #aaa; margin-bottom: 20px; }
+        .plano-card ul li { margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+
+        .aviso-trial { background: #f59e0b; color: #000; padding: 10px; text-align: center; font-weight: bold; border-radius: 4px; margin-bottom: 20px; width: 100%; max-width: 1100px; display: none;}
+
+        /* MODAIS RESTAURADOS */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: #1e1e1e; padding: 30px; border-radius: 8px; width: 95%; max-width: 600px; border: 1px solid #444; position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-fechar { position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #888; font-size: 20px; cursor: pointer; }
+        .info-box { background: #252525; padding: 12px; border-radius: 6px; border: 1px solid #333; margin-bottom: 10px;}
+        .info-box span { display: block; font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 4px;}
+        .info-box strong { color: #fff; font-size: 14px; }
 
         .telas { display: none; }
         .auth-view { display: none; }
@@ -65,97 +66,81 @@
 </head>
 <body>
 
+    <div id="avisoTrial" class="aviso-trial"></div>
+
     <div id="telaAutenticacao">
-        
-        <div class="container auth-view" id="viewLogin" style="display: block;">
-            <h2 style="justify-content: center; border:none; margin-bottom:0;">Casa Silenzi ERP</h2>
-            <p style="text-align: center; color: #888; font-size: 14px; margin-top:0;">Acesse seu estúdio</p>
-            <label>E-mail</label><input type="email" id="logEmail">
-            <label>Senha</label><input type="password" id="logSenha">
-            <button class="btn-principal" onclick="fazerLogin()">Entrar</button>
-            <span class="link-text" onclick="trocarViewAuth('viewEsqueci')">Esqueci minha senha</span>
-            <button class="btn-secundario" style="margin-top:20px;" onclick="trocarViewAuth('viewCadastro')">Criar nova conta</button>
+        <div class="container container-auth auth-view" id="viewLogin" style="display: block;">
+            <h2 style="justify-content: center;">Acesso ERP</h2>
+            <label>E-mail</label>
+            <input type="email" id="logEmail" onkeydown="if(event.key === 'Enter') fazerLogin()">
+            <label>Senha</label>
+            <input type="password" id="logSenha" onkeydown="if(event.key === 'Enter') fazerLogin()">
+            <button class="btn-principal" onclick="fazerLogin()">Entrar no Sistema</button>
+            <p onclick="trocarViewAuth('viewCadastro')" style="text-align:center; font-size:12px; cursor:pointer; margin-top:20px; color:#aaa;"><u>Criar Nova Conta (7 Dias Grátis)</u></p>
         </div>
 
-        <div class="container auth-view" id="viewCadastro">
-            <h2 style="justify-content: center; border:none; margin-bottom:0;">Criar Conta</h2>
-            <p style="text-align: center; color: #888; font-size: 14px; margin-top:0;">Teste de 7 dias liberado</p>
-            <label>Nome Completo *</label><input type="text" id="cadNome">
-            <label>CPF *</label><input type="text" id="cadCPF" placeholder="000.000.000-00">
-            <label>Data de Nascimento *</label><input type="date" id="cadNasc">
-            <label>E-mail *</label><input type="email" id="cadEmail">
-            <label>Senha *</label><input type="password" id="cadSenha">
-            <button class="btn-principal" onclick="fazerCadastro()">Registrar e Acessar</button>
-            <button class="btn-secundario" onclick="trocarViewAuth('viewLogin')">Voltar para o Login</button>
+        <div class="container container-auth auth-view" id="viewCadastro">
+            <h2 style="justify-content: center;">Criar Perfil</h2>
+            <label>Nome Completo</label><input type="text" id="cadNome">
+            <label>CPF</label><input type="text" id="cadCPF">
+            <label>E-mail</label><input type="email" id="cadEmail">
+            <label>Senha</label><input type="password" id="cadSenha">
+            <button class="btn-principal" onclick="fazerCadastro()">Começar Teste Grátis</button>
+            <p onclick="trocarViewAuth('viewLogin')" style="text-align:center; font-size:12px; cursor:pointer; margin-top:20px; color:#aaa;"><u>Voltar ao Login</u></p>
         </div>
+    </div>
 
-        <div class="container auth-view" id="viewEsqueci">
-            <h2 style="justify-content: center; border:none; margin-bottom:0;">Recuperar Senha</h2>
-            <label>Digite seu E-mail</label><input type="email" id="recEmail">
-            <button class="btn-principal" onclick="recuperarSenha()">Enviar link de recuperação</button>
-            <button class="btn-secundario" onclick="trocarViewAuth('viewLogin')">Voltar para o Login</button>
+    <div id="telaBloqueio">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #ff6b6b; margin-bottom: 5px;">Seu período de teste expirou!</h1>
+            <p style="color: #aaa;">Para continuar acessando o CRM, Agenda e Financeiro, escolha um de nossos planos.</p>
         </div>
-
+        <div class="planos-grid">
+            <div class="plano-card">
+                <h3>Básico</h3>
+                <div class="preco">R$ 99,90<span style="font-size:14px; color:#888;">/mês</span></div>
+                <ul><li>✔ CRM WhatsApp</li><li>✔ Agenda Sincronizada</li><li>✔ Dashboard Financeiro</li><li>✖ Multi-artistas</li></ul>
+                <button class="btn-principal" style="background:#3b82f6; color:#fff;" onclick="assinarPlano('Basico')">Assinar Básico</button>
+            </div>
+            <div class="plano-card" style="border-color: #10b981;">
+                <h3 style="color: #10b981;">Avançado</h3>
+                <div class="preco" style="color: #10b981;">R$ 149,90<span style="font-size:14px; color:#888;">/mês</span></div>
+                <ul><li>✔ Tudo do plano Básico</li><li>✔ Gestão Multi-artistas</li><li>✔ Painel de Comissões</li><li>✖ Custo de Materiais</li></ul>
+                <button class="btn-principal" style="background:#10b981; color:#fff;" onclick="assinarPlano('Avancado')">Assinar Avançado</button>
+            </div>
+            <div class="plano-card">
+                <h3>Premium</h3>
+                <div class="preco">R$ 199,90<span style="font-size:14px; color:#888;">/mês</span></div>
+                <ul><li>✔ Tudo do plano Avançado</li><li>✔ Cálculo de Custos / Sessão</li><li>✔ API Integrações Futuras</li><li>✔ Suporte Prioritário</li></ul>
+                <button class="btn-principal" style="background:#fff; color:#000;" onclick="assinarPlano('Premium')">Assinar Premium</button>
+            </div>
+        </div>
+        <button class="btn-principal" style="background:transparent; color:#888; border:1px solid #444; width: 200px; margin-top:30px;" onclick="fazerLogout()">Sair da Conta</button>
     </div>
 
     <div id="telaAplicativo">
-        
         <div class="nav-menu">
             <button class="nav-btn active" id="btnCadastro" onclick="mudarTela('cadastro')">Novo CRM</button>
-            <button class="nav-btn" id="btnLista" onclick="mudarTela('lista')">Lista CRM</button>
-            <button class="nav-btn" id="btnAgendamentos" onclick="mudarTela('agendamentos')">Agendar</button>
+            <button class="nav-btn" id="btnLista" onclick="mudarTela('lista')">Lista / Status</button>
+            <button class="nav-btn" id="btnAgendamentos" onclick="mudarTela('agendamentos')">Novo Agendamento</button>
             <button class="nav-btn" id="btnVerAgenda" onclick="mudarTela('verAgenda')">Sessões</button>
-            <button class="nav-btn" id="btnDashboard" onclick="mudarTela('dashboard')">Relatórios</button>
-            <button class="nav-btn" id="btnPerfil" onclick="mudarTela('perfil')" style="background-color: #2c2c2c;">Meu Perfil</button>
-            <button class="nav-btn btn-sair" onclick="fazerLogout()">Sair</button>
+            <button class="nav-btn" id="btnFinanceiro" onclick="mudarTela('financeiro')">Financeiro</button>
+            <button class="nav-btn" id="btnDashboard" onclick="mudarTela('dashboard')">Dashboard</button>
+            <button class="nav-btn" id="btnPerfil" onclick="mudarTela('perfil')">Meu Perfil</button>
+            <button class="nav-btn" style="color:#ff6b6b; border-color:#ff6b6b;" onclick="fazerLogout()">Sair</button>
         </div>
 
         <div class="container telas" id="telaPerfil">
-            <h2>Dados Cadastrais do Usuário</h2>
-            <p style="color: #888; font-size: 14px; margin-top: -10px; margin-bottom: 20px;">Complete seu perfil para faturamento e gestão.</p>
+            <h2>Configurações de Perfil</h2>
             <div class="form-grid">
-                <div><label>Nome Completo</label><input type="text" id="perfNome" disabled style="opacity:0.6;"></div>
-                <div><label>E-mail</label><input type="text" id="perfEmail" disabled style="opacity:0.6;"></div>
-                <div><label>Endereço Completo</label><input type="text" id="perfEnd"></div>
-                <div class="form-grid" style="grid-template-columns: 2fr 1fr; gap:10px;">
-                    <div><label>Cidade</label><input type="text" id="perfCidade"></div>
-                    <div><label>Estado (UF)</label><input type="text" id="perfEstado" placeholder="Ex: SP"></div>
-                </div>
-                <div>
-                    <label>Identidade de Gênero</label>
-                    <select id="perfGenero">
-                        <option value="">Selecione...</option>
-                        <option value="Mulher Cisgênero">Mulher Cisgênero</option>
-                        <option value="Homem Cisgênero">Homem Cisgênero</option>
-                        <option value="Mulher Transgênero">Mulher Transgênero</option>
-                        <option value="Homem Transgênero">Homem Transgênero</option>
-                        <option value="Não-binário">Não-binário</option>
-                        <option value="Agênero">Agênero</option>
-                        <option value="Outro">Outro</option>
-                        <option value="Prefiro não informar">Prefiro não informar</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Área de Atuação</label>
+                <div><label>Nome Completo</label><input type="text" id="perfNome" disabled></div>
+                <div><label>E-mail</label><input type="text" id="perfEmail" disabled></div>
+                <div><label>Plano Atual</label><input type="text" id="perfPlano" disabled value="Avaliando"></div>
+                <div><label>Atuação Profissional</label>
                     <select id="perfAtuacao">
-                        <option value="">Selecione...</option>
-                        <option value="Dono(a) de Estúdio">Dono(a) de Estúdio</option>
+                        <option value="Dono de Estúdio">Dono de Estúdio</option>
+                        <option value="Tatuador">Tatuador</option>
                         <option value="Gerente">Gerente</option>
-                        <option value="Tatuador(a)">Tatuador(a)</option>
-                        <option value="Body Piercer">Body Piercer</option>
-                        <option value="Esteticista">Esteticista</option>
-                        <option value="Administrador(a)">Administrador(a)</option>
-                        <option value="Outro">Outro</option>
-                    </select>
-                </div>
-                <div class="form-full">
-                    <label>Como nos conheceu?</label>
-                    <select id="perfConheceu">
-                        <option value="">Selecione...</option>
-                        <option value="Instagram">Instagram / Redes Sociais</option>
-                        <option value="Google">Google / Pesquisa</option>
-                        <option value="Indicação">Indicação de amigo/estúdio</option>
-                        <option value="Outro">Outro</option>
                     </select>
                 </div>
             </div>
@@ -163,44 +148,54 @@
         </div>
 
         <div class="container telas" id="telaCadastro" style="display: block;">
-            <h2>Adicionar Contato (CRM)</h2>
+            <h2>Adicionar Prospect ao Funil</h2>
             <form id="prospectForm">
                 <div class="form-grid">
                     <div><label>Nome do Cliente *</label><input type="text" id="nome"></div>
-                    <div><label>WhatsApp (Com DDI) *</label><input type="tel" id="whatsapp" placeholder="Ex: 55 11 99999-9999"></div>
-                    <div><label>Status</label><select id="status_p"><option value="Novo Contato">Novo Contato</option><option value="Orçamento Enviado">Orçamento Enviado</option><option value="Agendado">Agendado</option><option value="Perdido">Perdido / Sem Resposta</option></select></div>
+                    <div><label>WhatsApp (Com DDI) *</label><input type="tel" id="whatsapp" placeholder="Ex: 55 11 999999999"></div>
+                    <div><label>E-mail</label><input type="email" id="email" placeholder="cliente@email.com"></div>
+                    <div><label>Instagram</label><input type="text" id="instagram" placeholder="@usuario"></div>
+                    <div><label>Data de Nascimento</label><input type="date" id="data_nascimento"></div>
+                    
+                    <div class="form-third form-full">
+                        <div><label>País</label><input type="text" id="pais" placeholder="Ex: Brasil"></div>
+                        <div><label>Cidade</label><input type="text" id="cidade" placeholder="Ex: São Paulo"></div>
+                        <div><label>Endereço Completo</label><input type="text" id="endereco"></div>
+                    </div>
+
+                    <div><label>Status Inicial</label><select id="status_p"><option value="Novo Contato">Novo Contato</option><option value="Orçamento Enviado">Orçamento Enviado</option><option value="Agendado">Agendado</option><option value="Perdido">Perdido</option></select></div>
                     <div><label>Artista Preferencial</label><select id="profissional_p"><option value="Gianni Silenzi">Gianni Silenzi</option><option value="Mariana Silenzi">Mariana Silenzi</option><option value="Larissa Faria">Larissa Faria</option></select></div>
-                    <div><label>Aceita campanhas?</label><select id="aceita_marketing"><option value="Sim">Sim</option><option value="Não">Não</option></select></div>
-                    <div><label>Aceita encaixes?</label><select id="aceita_encaixe"><option value="Sim">Sim</option><option value="Não">Não</option></select></div>
-                    <div class="form-full"><label>Briefing Inicial</label><textarea id="ideia" rows="2"></textarea></div>
+                    <div class="form-full"><label>Briefing / Ideia Original</label><textarea id="ideia" rows="3" placeholder="Descreva a ideia inicial da tatuagem..."></textarea></div>
                 </div>
-                <button type="button" class="btn-principal" onclick="salvarProspect()">Salvar no CRM</button>
+                <button type="button" class="btn-principal" onclick="salvarProspect()">Registrar no CRM</button>
             </form>
         </div>
 
         <div class="container telas" id="telaLista">
-            <h2>Funil de Clientes</h2>
-            <input type="text" class="search-bar" placeholder="🔍 Buscar por nome, status ou telefone..." onkeyup="filtrarTabela('tabelaCRM', this.value)">
-            <div class="table-container">
+            <h2>Funil de Atendimento</h2>
+            <input type="text" class="search-bar" placeholder="🔍 Filtrar por nome, status ou artista..." onkeyup="filtrarTabela('tabelaCRM', this.value)">
+            <div class="table-wrapper">
                 <table id="tabelaCRM">
-                    <thead><tr><th>Status</th><th>Nome</th><th>WhatsApp</th><th>Agenda</th></tr></thead>
+                    <thead><tr><th>Status</th><th>Nome</th><th>WhatsApp</th><th>Artista</th><th>Ação</th></tr></thead>
                     <tbody id="corpoTabela"></tbody>
                 </table>
             </div>
         </div>
 
         <div class="container telas" id="telaAgendamentos">
-            <h2>Novo Agendamento</h2>
+            <h2>Marcar Sessão</h2>
             <form id="agendaForm">
                 <div class="form-grid">
-                    <div class="form-full"><label>Cliente *</label><select id="selectCliente"></select></div>
-                    <div class="form-full"><label>Briefing da Sessão</label><textarea id="briefing_agenda" rows="2"></textarea></div>
-                    <div><label>Tamanho</label><input type="text" id="tamanho_agenda"></div>
+                    <div class="form-full"><label>Vincular Cliente *</label><select id="selectCliente"></select></div>
+                    <div class="form-full"><label>Briefing da Sessão</label><textarea id="briefing_agenda" rows="3" placeholder="Informações específicas para o dia da sessão..."></textarea></div>
+                    <div><label>Tamanho (cm)</label><input type="text" id="tamanho_agenda"></div>
                     <div><label>Local do Corpo</label><input type="text" id="local_agenda"></div>
                     <div><label>Data *</label><input type="date" id="data_agenda"></div>
-                    <div><label>Hora *</label><input type="time" id="hora_agenda"></div>
-                    <div><label>Procedimento</label><input type="text" id="procedimento"></div>
-                    <div><label>Artista *</label><select id="prof_agenda"><option value="Gianni Silenzi">Gianni Silenzi</option><option value="Mariana Silenzi">Mariana Silenzi</option><option value="Larissa Faria">Larissa Faria</option></select></div>
+                    
+                    <div><label>Hora * (Intervalos de 15min)</label><input type="time" id="hora_agenda" step="900"></div>
+                    
+                    <div><label>Procedimento / Estilo</label><input type="text" id="procedimento"></div>
+                    <div><label>Artista Responsável *</label><select id="prof_agenda"><option value="Gianni Silenzi">Gianni Silenzi</option><option value="Mariana Silenzi">Mariana Silenzi</option><option value="Larissa Faria">Larissa Faria</option></select></div>
                     <div><label>Valor Total (R$)</label><input type="number" id="v_total"></div>
                     <div><label>Sinal Pago (R$)</label><input type="number" id="v_sinal"></div>
                 </div>
@@ -209,256 +204,302 @@
         </div>
 
         <div class="container telas" id="telaVerAgenda">
-            <h2>Agenda de Sessões</h2>
-            <input type="text" class="search-bar" placeholder="🔍 Buscar sessões..." onkeyup="filtrarTabela('tabelaSessoes', this.value)">
-            <div class="table-container">
+            <h2>Próximas Sessões</h2>
+            <input type="text" class="search-bar" placeholder="🔍 Filtrar por data ou cliente..." onkeyup="filtrarTabela('tabelaSessoes', this.value)">
+            <div class="table-wrapper">
                 <table id="tabelaSessoes">
-                    <thead><tr><th>Data/Hora</th><th>Cliente</th><th>Procedimento</th><th>Artista</th></tr></thead>
+                    <thead><tr><th>Data/Hora</th><th>Cliente</th><th>Procedimento</th><th>Artista</th><th>Ação</th></tr></thead>
                     <tbody id="corpoVerAgenda"></tbody>
                 </table>
             </div>
         </div>
 
-        <div class="container telas" id="telaDashboard">
-            <h2>Dashboard & Financeiro
-                <div>
-                    <button class="btn-export" onclick="exportarCSV()">Baixar Excel (CSV)</button>
-                    <button class="btn-export" style="background:#fff;" onclick="exportarTXT()">Baixar TXT</button>
-                </div>
-            </h2>
-            <div class="form-third" style="margin-bottom: 20px; background: #252525; padding: 15px; border-radius: 8px;">
-                <div><label style="margin-top:0;">Data Inicial</label><input type="date" id="dash_inicio"></div>
-                <div><label style="margin-top:0;">Data Final</label><input type="date" id="dash_fim"></div>
-                <div style="display: flex; align-items: flex-end;"><button class="btn-acao" style="width: 100%; padding: 11px;" onclick="gerarGraficos()">Filtrar Período</button></div>
+        <div class="container telas" id="telaFinanceiro">
+            <h2>Balanço Financeiro</h2>
+            <div class="fin-grid">
+                <div class="card-fin"><h3>Produção Bruta</h3><p id="fin_total">R$ 0,00</p></div>
+                <div class="card-fin" style="border-left-color: #4ade80;"><h3>Sinais Recebidos</h3><p id="fin_sinal">R$ 0,00</p></div>
+                <div class="card-fin" style="border-left-color: #ff6b6b;"><h3>Pendente a Receber</h3><p id="fin_pendente">R$ 0,00</p></div>
             </div>
-            <div class="fin-grid" id="dash_resumo"></div>
-            <div class="form-grid">
-                <div class="chart-container"><canvas id="graficoEstudio"></canvas></div>
-                <div class="chart-container"><canvas id="graficoArtistas"></canvas></div>
+            <div class="table-wrapper">
+                <table id="tabelaFin">
+                    <thead><tr><th>Artista</th><th>Total Produzido</th><th>Sinais (Caixa)</th><th>A Receber</th></tr></thead>
+                    <tbody id="corpoFinanceiro"></tbody>
+                </table>
             </div>
         </div>
 
+        <div class="container telas" id="telaDashboard">
+            <h2>Performance & Relatórios</h2>
+            <div class="form-third" style="margin-bottom: 25px;">
+                <div><label>Data Início</label><input type="date" id="dash_inicio"></div>
+                <div><label>Data Fim</label><input type="date" id="dash_fim"></div>
+                <div style="display:flex; align-items:flex-end;"><button class="btn-principal" style="margin:0; height:41px;" onclick="gerarDashboard()">Gerar Análise</button></div>
+            </div>
+            <div class="form-grid">
+                <div class="chart-box"><canvas id="graficoEstudio"></canvas></div>
+                <div class="chart-box"><canvas id="graficoArtistas"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalCRM" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-fechar" onclick="fecharModal('modalCRM')">✖</button>
+            <h3 id="mc_nome" style="color:#fff; margin-bottom:5px;">Nome do Cliente</h3>
+            <p id="mc_status" style="color:#aaa; font-size:14px; margin-bottom:20px;">Status</p>
+            
+            <div class="form-grid">
+                <div class="info-box"><span>WhatsApp</span><strong id="mc_zap">-</strong></div>
+                <div class="info-box"><span>Instagram</span><strong id="mc_insta">-</strong></div>
+                <div class="info-box"><span>E-mail</span><strong id="mc_email">-</strong></div>
+                <div class="info-box"><span>Nascimento</span><strong id="mc_nasc">-</strong></div>
+                <div class="info-box form-full"><span>Localização</span><strong id="mc_loc">-</strong></div>
+                <div class="info-box form-full"><span>Artista Responsável</span><strong id="mc_artista">-</strong></div>
+                <div class="info-box form-full"><span>Briefing Original</span><strong id="mc_ideia" style="font-weight:normal;">-</strong></div>
+            </div>
+            <a href="#" id="mc_btnZap" target="_blank" class="btn-zap">Iniciar Conversa no WhatsApp</a>
+        </div>
+    </div>
+
+    <div id="modalSessao" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-fechar" onclick="fecharModal('modalSessao')">✖</button>
+            <h3 id="ms_nome" style="color:#fff; margin-bottom:5px;">Nome</h3>
+            <p id="ms_proc" style="color:#aaa; font-size:14px; margin-bottom:20px;">Procedimento</p>
+            
+            <div class="form-grid">
+                <div class="info-box form-full"><span>Briefing da Sessão</span><strong id="ms_briefing" style="font-weight:normal;">-</strong></div>
+                <div class="info-box"><span>Tamanho</span><strong id="ms_tam">-</strong></div>
+                <div class="info-box"><span>Local no Corpo</span><strong id="ms_loc">-</strong></div>
+                <div class="info-box"><span>Orçamento Total</span><strong id="ms_tot">-</strong></div>
+                <div class="info-box" style="border-left: 3px solid #4ade80;"><span>Sinal Pago</span><strong style="color:#4ade80;" id="ms_pag">-</strong></div>
+            </div>
+            <a href="#" id="ms_btnZap" target="_blank" class="btn-zap">Confirmar Sessão via WhatsApp</a>
+        </div>
     </div>
 
     <script>
-        // --- SUAS CREDENCIAIS ---
         const supabaseUrl = 'https://gcdwufkrxxmcvmfqpuik.supabase.co';
         const supabaseKey = 'sb_publishable_ncNIAkqGnPnRrgehmnmrXw_IluSVIO0';
-        const clienteSupabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const client = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        let usuarioAtual = null; // Guarda quem está logado
+        let userLogado = null;
         let cacheClientes = [];
-        let cacheAgendamentos = [];
-        let chartEstudio = null, chartArtistas = null;
+        let cacheSessoes = [];
+        let chart1 = null, chart2 = null;
 
-        // ==========================================
-        // SISTEMA DE AUTENTICAÇÃO E PERFIL
-        // ==========================================
+        // AUTH & VERIFICAÇÃO DE TRIAL
+        client.auth.onAuthStateChange((event, session) => {
+            document.getElementById('telaAutenticacao').style.display = 'none';
+            document.getElementById('telaAplicativo').style.display = 'none';
+            document.getElementById('telaBloqueio').style.display = 'none';
+            document.getElementById('avisoTrial').style.display = 'none';
 
-        // Verifica estado atual do login sempre que a página carrega
-        clienteSupabase.auth.onAuthStateChange((event, session) => {
             if (session) {
-                usuarioAtual = session.user;
-                document.getElementById('telaAutenticacao').style.display = 'none';
-                document.getElementById('telaAplicativo').style.display = 'flex';
-                carregarDadosDoPerfil();
-                mudarTela('cadastro'); // Tela inicial após login
+                userLogado = session.user;
+                verificarStatusConta(userLogado.created_at);
             } else {
-                usuarioAtual = null;
-                document.getElementById('telaAutenticacao').style.display = 'block';
-                document.getElementById('telaAplicativo').style.display = 'none';
-                trocarViewAuth('viewLogin');
+                document.getElementById('telaAutenticacao').style.display = 'flex';
             }
         });
 
-        function trocarViewAuth(viewId) {
-            document.querySelectorAll('.auth-view').forEach(v => v.style.display = 'none');
-            document.getElementById(viewId).style.display = 'block';
+        function verificarStatusConta(dataCriacaoStr) {
+            const dataCadastro = new Date(dataCriacaoStr);
+            const hoje = new Date();
+            const diferencaTempo = hoje.getTime() - dataCadastro.getTime();
+            const diasUso = Math.floor(diferencaTempo / (1000 * 3600 * 24));
+            
+            if (diasUso > 7) {
+                document.getElementById('telaBloqueio').style.display = 'flex';
+            } else {
+                document.getElementById('telaAplicativo').style.display = 'flex';
+                const diasRestantes = 7 - diasUso;
+                document.getElementById('avisoTrial').innerText = `Você está no período de teste. Restam ${diasRestantes} dias.`;
+                document.getElementById('avisoTrial').style.display = 'block';
+                carregarPerfil();
+                mudarTela('cadastro');
+            }
         }
 
         async function fazerCadastro() {
-            const nome = document.getElementById('cadNome').value;
-            const cpf = document.getElementById('cadCPF').value;
-            const nasc = document.getElementById('cadNasc').value;
             const email = document.getElementById('cadEmail').value;
-            const senha = document.getElementById('cadSenha').value;
-
-            if(!nome || !cpf || !nasc || !email || !senha) return alert("Preencha todos os campos obrigatórios!");
-
-            // 1. Cria usuário na Autenticação do Supabase
-            const { data, error } = await clienteSupabase.auth.signUp({ email: email, password: senha });
-            
-            if (error) {
-                alert("Erro ao cadastrar: " + error.message);
-                return;
-            }
-
-            // 2. Salva os dados extras na tabela 'usuarios'
+            const pass = document.getElementById('cadSenha').value;
+            const { data, error } = await client.auth.signUp({ email, password: pass });
+            if (error) return alert(error.message);
             if (data.user) {
-                await clienteSupabase.from('usuarios').insert([{
-                    id: data.user.id, // Liga o ID da auth com a tabela
-                    email: email,
-                    nome_completo: nome,
-                    cpf: cpf,
-                    data_nascimento: nasc
-                }]);
-                alert("Conta criada com sucesso! Você já está logado.");
+                await client.from('usuarios').insert([{ id: data.user.id, email: email, nome_completo: document.getElementById('cadNome').value, cpf: document.getElementById('cadCPF').value }]);
+                alert("Conta criada! Seu teste de 7 dias começou.");
             }
         }
 
-        async function fazerLogin() {
-            const email = document.getElementById('logEmail').value;
-            const senha = document.getElementById('logSenha').value;
-            const { error } = await clienteSupabase.auth.signInWithPassword({ email, password: senha });
-            if (error) alert("Erro: E-mail ou senha incorretos.");
+        function assinarPlano(plano) { alert(`Você escolheu o plano ${plano}. A integração com gateway de pagamento virá na próxima etapa.`); }
+
+        // Funções Base
+        async function fazerLogin() { 
+            const { error } = await client.auth.signInWithPassword({ email: document.getElementById('logEmail').value, password: document.getElementById('logSenha').value }); 
+            if(error) alert("Credenciais inválidas ou e-mail incorreto.");
         }
-
-        async function fazerLogout() {
-            await clienteSupabase.auth.signOut();
+        
+        async function fazerLogout() { await client.auth.signOut(); }
+        function trocarViewAuth(id) { document.querySelectorAll('.auth-view').forEach(v => v.style.display = 'none'); document.getElementById(id).style.display = 'block'; }
+        function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        async function carregarPerfil() {
+            const { data } = await client.from('usuarios').select('*').eq('id', userLogado.id).single();
+            if(data) { document.getElementById('perfNome').value = data.nome_completo; document.getElementById('perfEmail').value = data.email; document.getElementById('perfAtuacao').value = data.atuacao || 'Tatuador'; }
         }
+        async function atualizarPerfil() { await client.from('usuarios').update({ atuacao: document.getElementById('perfAtuacao').value }).eq('id', userLogado.id); alert("Atualizado!"); }
 
-        async function recuperarSenha() {
-            const email = document.getElementById('recEmail').value;
-            if(!email) return alert("Digite seu e-mail.");
-            const { error } = await clienteSupabase.auth.resetPasswordForEmail(email);
-            if(error) alert("Erro: " + error.message);
-            else alert("Se este e-mail estiver cadastrado, um link de recuperação foi enviado.");
-        }
-
-        // --- ABA MEU PERFIL ---
-        async function carregarDadosDoPerfil() {
-            if(!usuarioAtual) return;
-            const { data, error } = await clienteSupabase.from('usuarios').select('*').eq('id', usuarioAtual.id).single();
-            
-            if(data) {
-                document.getElementById('perfNome').value = data.nome_completo || '';
-                document.getElementById('perfEmail').value = data.email || '';
-                document.getElementById('perfEnd').value = data.endereco || '';
-                document.getElementById('perfCidade').value = data.cidade || '';
-                document.getElementById('perfEstado').value = data.estado || '';
-                document.getElementById('perfGenero').value = data.genero || '';
-                document.getElementById('perfAtuacao').value = data.atuacao || '';
-                document.getElementById('perfConheceu').value = data.como_conheceu || '';
-            }
-        }
-
-        async function atualizarPerfil() {
-            if(!usuarioAtual) return;
-            const updates = {
-                endereco: document.getElementById('perfEnd').value,
-                cidade: document.getElementById('perfCidade').value,
-                estado: document.getElementById('perfEstado').value,
-                genero: document.getElementById('perfGenero').value,
-                atuacao: document.getElementById('perfAtuacao').value,
-                como_conheceu: document.getElementById('perfConheceu').value
-            };
-            
-            const { error } = await clienteSupabase.from('usuarios').update(updates).eq('id', usuarioAtual.id);
-            if(error) alert("Erro ao atualizar: " + error.message);
-            else alert("Perfil atualizado com sucesso!");
-        }
-
-        // ==========================================
-        // FUNÇÕES DO ERP (CRM, Agenda, Dashboard)
-        // ==========================================
-
-        function mudarTela(tela) {
-            document.querySelectorAll('.telas').forEach(c => c.style.display = 'none');
+        function mudarTela(id) {
+            document.querySelectorAll('.telas').forEach(t => t.style.display = 'none');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn' + tela.charAt(0).toUpperCase() + tela.slice(1)).classList.add('active');
-            document.getElementById('tela' + tela.charAt(0).toUpperCase() + tela.slice(1)).style.display = 'block';
-
-            if(tela === 'lista') carregarProspects();
-            if(tela === 'agendamentos') popularSelectClientes();
-            if(tela === 'verAgenda') carregarAgendaInterna();
-            if(tela === 'dashboard') gerarGraficos();
+            document.getElementById('btn' + id.charAt(0).toUpperCase() + id.slice(1)).classList.add('active');
+            document.getElementById('tela' + id).style.display = 'block';
+            if(id === 'lista') carregarCRM(); if(id === 'agendamentos') carregarSelect(); if(id === 'verAgenda') carregarAgenda(); if(id === 'financeiro') carregarFinanceiro(); if(id === 'dashboard') gerarDashboard();
         }
 
-        function filtrarTabela(idTabela, termo) {
-            const filtro = termo.toUpperCase();
-            const linhas = document.getElementById(idTabela).getElementsByTagName('tr');
-            for (let i = 1; i < linhas.length; i++) {
-                let texto = linhas[i].textContent || linhas[i].innerText;
-                linhas[i].style.display = texto.toUpperCase().indexOf(filtro) > -1 ? "" : "none";
+        function filtrarTabela(idTab, val) { const filter = val.toUpperCase(); const rows = document.getElementById(idTab).getElementsByTagName("tr"); for (let i = 1; i < rows.length; i++) { rows[i].style.display = rows[i].innerText.toUpperCase().includes(filter) ? "" : "none"; } }
+
+        // SALVAR PROSPECT COM TODOS OS CAMPOS
+        async function salvarProspect() { 
+            const dados = { 
+                nome: document.getElementById('nome').value, 
+                whatsapp: document.getElementById('whatsapp').value, 
+                email: document.getElementById('email').value,
+                instagram: document.getElementById('instagram').value,
+                data_nascimento: document.getElementById('data_nascimento').value,
+                pais: document.getElementById('pais').value,
+                cidade: document.getElementById('cidade').value,
+                endereco: document.getElementById('endereco').value,
+                status: document.getElementById('status_p').value, 
+                profissional: document.getElementById('profissional_p').value, 
+                ideia: document.getElementById('ideia').value 
+            };
+            
+            const { error } = await client.from('prospects').insert([dados]); 
+            if(error) {
+                alert("Erro ao salvar! Verifique se você criou todas as novas colunas no Supabase.\nDetalhe: " + error.message);
+            } else {
+                alert("Cliente Registrado no CRM!"); 
+                document.getElementById('prospectForm').reset(); 
+                mudarTela('lista'); 
             }
         }
 
-        async function salvarProspect() {
-            const f = document.getElementById('prospectForm');
-            const dados = { 
-                nome: document.getElementById('nome').value, whatsapp: document.getElementById('whatsapp').value, 
-                profissional: document.getElementById('profissional_p').value, ideia: document.getElementById('ideia').value,
-                status: document.getElementById('status_p').value, aceita_marketing: document.getElementById('aceita_marketing').value,
-                aceita_encaixe: document.getElementById('aceita_encaixe').value
-            };
-            await clienteSupabase.from('prospects').insert([dados]);
-            alert("Cliente salvo no CRM!"); f.reset(); mudarTela('lista');
-        }
-
-        async function carregarProspects() {
-            const { data } = await clienteSupabase.from('prospects').select('*').order('created_at', { ascending: false });
+        // CARREGAR E ABRIR MODAL CRM
+        async function carregarCRM() { 
+            const { data } = await client.from('prospects').select('*').order('created_at', { ascending: false }); 
             document.getElementById('corpoTabela').innerHTML = (data || []).map(p => {
-                let cor = p.status === 'Novo Contato' ? 'status-novo' : p.status === 'Orçamento Enviado' ? 'status-orcamento' : p.status === 'Agendado' ? 'status-agendado' : 'status-perdido';
-                return `<tr><td><span class="badge ${cor}">${p.status}</span></td><td><strong>${p.nome}</strong></td><td>${p.whatsapp}</td><td>${p.profissional}</td></tr>`;
-            }).join('');
+                const strP = encodeURIComponent(JSON.stringify(p));
+                return `<tr><td>${p.status}</td><td><strong>${p.nome}</strong></td><td>${p.whatsapp}</td><td>${p.profissional}</td><td><button class="btn-acao" onclick="abrirCRM('${strP}')">Ver Detalhes</button></td></tr>`;
+            }).join(''); 
         }
 
-        async function popularSelectClientes() {
-            const { data } = await clienteSupabase.from('prospects').select('*').order('nome');
-            cacheClientes = data || [];
-            document.getElementById('selectCliente').innerHTML = '<option value="">Selecione...</option>' + cacheClientes.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
-        }
-
-        async function salvarAgendamento() {
-            const cId = document.getElementById('selectCliente').value; const c = cacheClientes.find(i => i.id == cId);
-            if(!c) return alert("Selecione um cliente!");
-            const ag = {
-                cliente_id: parseInt(c.id), data: document.getElementById('data_agenda').value, horario: document.getElementById('hora_agenda').value,
-                procedimento: document.getElementById('procedimento').value, profissional: document.getElementById('prof_agenda').value,
-                valor_total: parseFloat(document.getElementById('v_total').value || 0), valor_sinal: parseFloat(document.getElementById('v_sinal').value || 0),
-                briefing: document.getElementById('briefing_agenda').value, tamanho: document.getElementById('tamanho_agenda').value,
-                local_corpo: document.getElementById('local_agenda').value, data_sinal: document.getElementById('data_sinal_agenda').value
-            };
-            const { error } = await clienteSupabase.from('agendamentos').insert([ag]);
-            if(!error) { await clienteSupabase.from('prospects').update({ status: 'Agendado' }).eq('id', c.id); document.getElementById('agendaForm').reset(); alert("Agendado!"); mudarTela('verAgenda'); }
-        }
-
-        async function carregarAgendaInterna() {
-            const { data } = await clienteSupabase.from('agendamentos').select('*, prospects(nome)').order('data').order('horario');
-            document.getElementById('corpoVerAgenda').innerHTML = (data || []).map(a => `<tr><td>${a.data.split('-').reverse().join('/')} - ${a.horario}</td><td><strong>${a.prospects?.nome||'-'}</strong></td><td>${a.procedimento}</td><td><span class="badge">${a.profissional}</span></td></tr>`).join('');
-        }
-
-        // --- DASHBOARD ---
-        async function gerarGraficos() {
-            const dI = document.getElementById('dash_inicio').value, dF = document.getElementById('dash_fim').value;
-            let query = clienteSupabase.from('agendamentos').select('*, prospects(nome)');
-            if(dI) query = query.gte('data', dI); if(dF) query = query.lte('data', dF);
+        function abrirCRM(strObj) {
+            const p = JSON.parse(decodeURIComponent(strObj));
+            document.getElementById('mc_nome').innerText = p.nome || 'Desconhecido';
+            document.getElementById('mc_status').innerText = `Status: ${p.status || '-'}`;
+            document.getElementById('mc_zap').innerText = p.whatsapp || '-';
+            document.getElementById('mc_insta').innerText = p.instagram || '-';
+            document.getElementById('mc_email').innerText = p.email || '-';
             
-            const { data } = await query; cacheAgendamentos = data || [];
-            const perfArtista = {}; let tP = 0;
-            cacheAgendamentos.forEach(a => { const val = parseFloat(a.valor_total || 0); tP += val; perfArtista[a.profissional] = (perfArtista[a.profissional] || 0) + val; });
-
-            document.getElementById('dash_resumo').innerHTML = `<div class="card-fin"><h3>Total Período</h3><p>${tP.toLocaleString('pt-br',{style:'currency',currency:'BRL'})}</p></div><div class="card-fin"><h3>Sessões</h3><p>${cacheAgendamentos.length}</p></div><div class="card-fin"><h3>Ticket Médio</h3><p>${(cacheAgendamentos.length>0?tP/cacheAgendamentos.length:0).toLocaleString('pt-br',{style:'currency',currency:'BRL'})}</p></div>`;
-
-            if(chartArtistas) chartArtistas.destroy();
-            chartArtistas = new Chart(document.getElementById('graficoArtistas').getContext('2d'), { type: 'pie', data: { labels: Object.keys(perfArtista), datasets: [{ data: Object.values(perfArtista), backgroundColor: ['#3b82f6', '#f59e0b', '#10b981'] }] }, options: { plugins: { title: { display: true, text: 'Faturamento por Artista', color: '#fff' }, legend: { labels: { color: '#fff' } } } } });
-
-            const fatDiario = {}; cacheAgendamentos.sort((a,b) => new Date(a.data) - new Date(b.data)).forEach(a => fatDiario[a.data] = (fatDiario[a.data] || 0) + parseFloat(a.valor_total || 0));
-            if(chartEstudio) chartEstudio.destroy();
-            chartEstudio = new Chart(document.getElementById('graficoEstudio').getContext('2d'), { type: 'bar', data: { labels: Object.keys(fatDiario).map(d => d.split('-').reverse().join('/')), datasets: [{ label: 'Faturamento Diário', data: Object.values(fatDiario), backgroundColor: '#ffffff' }] }, options: { plugins: { title: { display: true, text: 'Performance do Estúdio', color: '#fff' }, legend: { labels: { color: '#fff' } } }, scales: { y: { ticks: { color: '#aaa' } }, x: { ticks: { color: '#aaa' } } } } });
+            let dataNasc = '-';
+            if(p.data_nascimento) dataNasc = p.data_nascimento.split('-').reverse().join('/');
+            document.getElementById('mc_nasc').innerText = dataNasc;
+            
+            let loc = [p.cidade, p.pais, p.endereco].filter(Boolean).join(' - ');
+            document.getElementById('mc_loc').innerText = loc || '-';
+            
+            document.getElementById('mc_artista').innerText = p.profissional || '-';
+            document.getElementById('mc_ideia').innerText = p.ideia || 'Nenhum briefing registrado.';
+            
+            const zapLink = p.whatsapp ? `https://wa.me/${p.whatsapp.replace(/\D/g,'')}` : '#';
+            document.getElementById('mc_btnZap').href = zapLink;
+            
+            document.getElementById('modalCRM').style.display = 'flex';
+        }
+        
+        async function carregarSelect() { 
+            const { data } = await client.from('prospects').select('id, nome').order('nome'); 
+            cacheClientes = data || []; 
+            document.getElementById('selectCliente').innerHTML = '<option value="">Selecione o Cliente...</option>' + data.map(c => `<option value="${c.id}">${c.nome}</option>`).join(''); 
         }
 
-        function exportarCSV() {
-            if(cacheAgendamentos.length === 0) return alert("Nenhum dado. Filtre primeiro.");
-            let csv = "Data;Hora;Cliente;Procedimento;Artista;ValorTotal;ValorSinal\n";
-            cacheAgendamentos.forEach(a => csv += `${a.data};${a.horario};${a.prospects?.nome||'-'};${a.procedimento};${a.profissional};${a.valor_total||0};${a.valor_sinal||0}\n`);
-            const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" })); link.download = "relatorio.csv"; link.click();
+        async function salvarAgendamento() { 
+            const cId = document.getElementById('selectCliente').value;
+            if(!cId) return alert("Por favor, selecione um cliente primeiro!");
+
+            const ag = { 
+                cliente_id: parseInt(cId), 
+                data: document.getElementById('data_agenda').value, 
+                horario: document.getElementById('hora_agenda').value, 
+                procedimento: document.getElementById('procedimento').value, 
+                profissional: document.getElementById('prof_agenda').value, 
+                valor_total: parseFloat(document.getElementById('v_total').value||0), 
+                valor_sinal: parseFloat(document.getElementById('v_sinal').value||0), 
+                briefing: document.getElementById('briefing_agenda').value || '', 
+                tamanho: document.getElementById('tamanho_agenda').value || '', 
+                local_corpo: document.getElementById('local_agenda').value || '' 
+            }; 
+            
+            const { error } = await client.from('agendamentos').insert([ag]); 
+            if(error) {
+                alert("Erro ao salvar agendamento: " + error.message);
+            } else { 
+                alert("Sessão agendada com sucesso!"); 
+                document.getElementById('agendaForm').reset(); 
+                mudarTela('verAgenda'); 
+            } 
         }
-        function exportarTXT() {
-            if(cacheAgendamentos.length === 0) return alert("Nenhum dado.");
-            let txt = "RELATÓRIO CASA SILENZI\n======================\n\n";
-            cacheAgendamentos.forEach(a => txt += `Data: ${a.data.split('-').reverse().join('/')} às ${a.horario}\nCliente: ${a.prospects?.nome||'-'}\nProjeto: ${a.procedimento}\nArtista: ${a.profissional}\nOrçamento: R$ ${a.valor_total}\n----------------------\n`);
-            const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([txt], { type: "text/plain;charset=utf-8;" })); link.download = "relatorio.txt"; link.click();
+        
+        // CARREGAR E ABRIR MODAL SESSÕES
+        async function carregarAgenda() { 
+            const { data } = await client.from('agendamentos').select('*, prospects(nome, whatsapp)').order('data').order('horario'); 
+            document.getElementById('corpoVerAgenda').innerHTML = (data || []).map(a => {
+                const dataBr = a.data ? a.data.split('-').reverse().join('/') : '-';
+                const strA = encodeURIComponent(JSON.stringify(a));
+                return `<tr><td>${dataBr} - ${a.horario}</td><td><strong>${a.prospects?.nome||'-'}</strong></td><td>${a.procedimento}</td><td>${a.profissional}</td><td><button class="btn-acao" onclick="abrirSessao('${strA}')">Card Sessão</button></td></tr>`;
+            }).join(''); 
+        }
+
+        function abrirSessao(strObj) {
+            const a = JSON.parse(decodeURIComponent(strObj));
+            const dataBr = a.data ? a.data.split('-').reverse().join('/') : '-';
+            
+            document.getElementById('ms_nome').innerText = a.prospects?.nome || 'Desconhecido';
+            document.getElementById('ms_proc').innerText = `${a.procedimento || 'Sessão'} | ${dataBr} às ${a.horario} | ${a.profissional}`;
+            
+            document.getElementById('ms_briefing').innerText = a.briefing || 'Sem briefing detalhado para a sessão.';
+            document.getElementById('ms_tam').innerText = a.tamanho || '-';
+            document.getElementById('ms_loc').innerText = a.local_corpo || '-';
+            
+            document.getElementById('ms_tot').innerText = parseFloat(a.valor_total||0).toLocaleString('pt-br',{style:'currency',currency:'BRL'});
+            document.getElementById('ms_pag').innerText = parseFloat(a.valor_sinal||0).toLocaleString('pt-br',{style:'currency',currency:'BRL'});
+            
+            const zapLink = a.prospects?.whatsapp ? `https://wa.me/${a.prospects.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent('Olá ' + a.prospects.nome + ', confirmamos sua sessão no dia ' + dataBr + ' às ' + a.horario + '?')}` : '#';
+            document.getElementById('ms_btnZap').href = zapLink;
+            
+            document.getElementById('modalSessao').style.display = 'flex';
+        }
+        
+        async function carregarFinanceiro() {
+            const { data } = await client.from('agendamentos').select('*');
+            let tB=0, tS=0; const res = {'Gianni Silenzi':{t:0,s:0},'Mariana Silenzi':{t:0,s:0},'Larissa Faria':{t:0,s:0}};
+            (data||[]).forEach(i => { const vt=parseFloat(i.valor_total||0), vs=parseFloat(i.valor_sinal||0); tB+=vt; tS+=vs; if(res[i.profissional]) { res[i.profissional].t+=vt; res[i.profissional].s+=vs; } });
+            document.getElementById('fin_total').innerText = tB.toLocaleString('pt-br',{style:'currency',currency:'BRL'}); document.getElementById('fin_sinal').innerText = tS.toLocaleString('pt-br',{style:'currency',currency:'BRL'}); document.getElementById('fin_pendente').innerText = (tB-tS).toLocaleString('pt-br',{style:'currency',currency:'BRL'});
+            document.getElementById('corpoFinanceiro').innerHTML = Object.keys(res).map(n => `<tr><td><strong>${n}</strong></td><td>R$ ${res[n].t.toFixed(2)}</td><td>R$ ${res[n].s.toFixed(2)}</td><td style="color:#4ade80">R$ ${(res[n].t-res[n].s).toFixed(2)}</td></tr>`).join('');
+        }
+
+        async function gerarDashboard() {
+            const dI = document.getElementById('dash_inicio').value, dF = document.getElementById('dash_fim').value;
+            let q = client.from('agendamentos').select('*, prospects(nome)');
+            if(dI) q = q.gte('data', dI); if(dF) q = q.lte('data', dF);
+            const { data } = await q; cacheSessoes = data || [];
+            const perf = {}; cacheSessoes.forEach(s => { perf[s.profissional] = (perf[s.profissional]||0) + parseFloat(s.valor_total||0); });
+            if(chart1) chart1.destroy(); chart1 = new Chart(document.getElementById('graficoArtistas'), { type:'pie', data:{labels:Object.keys(perf), datasets:[{data:Object.values(perf), backgroundColor:['#3b82f6','#f59e0b','#10b981']}]}, options:{ plugins:{title:{display:true,text:'Produção por Artista',color:'#fff'}}} });
+            const fat = {}; cacheSessoes.sort((a,b)=>new Date(a.data)-new Date(b.data)).forEach(s => fat[s.data] = (fat[s.data]||0) + parseFloat(s.valor_total||0));
+            if(chart2) chart2.destroy(); chart2 = new Chart(document.getElementById('graficoEstudio'), { type:'bar', data:{labels:Object.keys(fat).map(d=>d.split('-').reverse().join('/')), datasets:[{label:'Faturamento Diário', data:Object.values(fat), backgroundColor:'#fff'}]}, options:{ scales:{y:{ticks:{color:'#fff'}}, x:{ticks:{color:'#fff'}}}} });
         }
     </script>
 </body>
